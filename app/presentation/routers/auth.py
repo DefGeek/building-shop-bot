@@ -2,13 +2,18 @@
 from fastapi import APIRouter, Header, HTTPException, Depends
 
 # ✅ Роутер знает ТОЛЬКО про Application (и про DI-функцию)
-from application.auth.commands.authenticate_user import (
+from app.application.auth.commands.authenticate_user import (
     AuthenticateUserCommand,
     AuthenticateUserHandler
 )
-from app.di import get_auth_handler
+from app.presentation.dependencies import get_auth_handler
 
 router = APIRouter()
+
+@router.post("/telegram")
+async def auth_telegram():
+    # Временная заглушка, чтобы сервер успешно стартовал
+    return {"status": "auth endpoint is ready"}
 
 @router.post("/auth/telegram")
 async def auth_telegram(

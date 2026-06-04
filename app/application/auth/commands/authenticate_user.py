@@ -1,10 +1,10 @@
 # application/auth/commands/authenticate_user.py
 from dataclasses import dataclass
 
-from domain.user.entities.user import User
-from domain.user.repositories.user_repository import UserRepository
-from domain.user.value_objects.telegram_id import TelegramID
-from domain.user.ports.auth_verifier import AuthVerifier  # <-- Только интерфейс!
+from app.domain.user.entities.user import User
+from app.domain.user.ports.user_repository import UserRepository
+from app.domain.user.value_objects.telegram_id import TelegramID
+from app.domain.user.ports.auth_verifier import AuthVerifier  # <-- Только интерфейс!
 
 
 @dataclass

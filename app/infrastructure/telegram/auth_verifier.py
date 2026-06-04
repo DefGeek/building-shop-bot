@@ -5,7 +5,7 @@ from urllib.parse import parse_qsl
 from datetime import datetime
 
 from app.config import settings
-from domain.user.repositories.auth_verifier import AuthVerifier # <-- Импортируем интерфейс
+from app.domain.user.ports.auth_verifier import AuthVerifier # <-- Импортируем интерфейс
 
 class TelegramAuthVerifier(AuthVerifier): # <-- Наследуемся от него
     def verify(self, init_data: str) -> dict:

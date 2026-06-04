@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import Optional
 from uuid import uuid4, UUID
 
-from domain.user.value_objects.telegram_id import TelegramID
-from domain.user.value_objects.user_role import UserRole
+from app.domain.user.value_objects.telegram_id import TelegramID
+from app.domain.user.value_objects.user_role import UserRole
 
 class User:
     def __init__(
