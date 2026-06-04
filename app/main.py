@@ -39,7 +39,7 @@ async def run_web_server():
 async def main():
     print("🚀 Запуск СтройМаркет AI (Бот + API)...")
 
-    # Запускаем бота и веб-сервер параллельно в одном event loop
+    # Запускаем бота и веб-сервер параллельно в одном event loop (в одном асинхронном потоке)
     await asyncio.gather(
         dp.start_polling(bot),
         run_web_server()
