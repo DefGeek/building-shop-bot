@@ -1,4 +1,7 @@
-# app/presentation/dependencies.py
+"""
+Суть dependencies чтобы брать реализации из architecture
+и передавать их в сценарии из application
+"""
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,6 +12,9 @@ from app.infrastructure.telegram.auth_verifier import TelegramAuthVerifier
 from app.application.auth.commands.authenticate_user import AuthenticateUserHandler
 
 # Синглтон верификатора
+# Синглтон - паттерн проектирования, при котором класс имеет один единственный
+# экземпляр на всё время работы приложения и все части программы
+# используют именно этот один объект
 _auth_verifier = TelegramAuthVerifier()
 
 

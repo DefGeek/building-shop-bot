@@ -1,4 +1,9 @@
-# app/presentation/routers/auth.py
+"""
+auth.py получает сырой HTTP-запрос.
+dependencies.py собирает конкретные реализации из infrastructure (сессию БД, верификатор).
+Эти реализации "засовываются" внутрь объекта application (Handler).
+Handler выполняет конкретное бизнес-поведение, вообще не зная, как и откуда взялись эти зависимости.
+"""
 from fastapi import APIRouter, Header, HTTPException, Depends
 
 from app.application.auth.commands.authenticate_user import (
@@ -12,6 +17,8 @@ router = APIRouter()
 @router.post("/auth/telegram")
 async def auth_telegram(
     x_telegram_init_data: str = Header(alias="X-Telegram-Init-Data"),
+    #Соблюдаем Паттерн проектирования Dependency Injection при котором объект не создаёт
+    #необходимые ему зависимости самостоятельно, а получает их извне
     handler: AuthenticateUserHandler = Depends(get_auth_handler)
 ):
     try:

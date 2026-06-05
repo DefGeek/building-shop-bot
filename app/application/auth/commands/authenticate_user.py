@@ -1,4 +1,15 @@
-# application/auth/commands/authenticate_user.py
+"""
+application как и infrastructure импортирую только из domain
+логика такая:
+если смотреть почему application использует domain тот тут
+вопросов нет - просто реализация поведения объектов
+
+в application потом будет передаваться в presentation реализация
+из infrastructure, и соответственно в infrastructure функции будут подаваться
+domain объекты и поэтому они там тоже нужны (мапингом этот вопрос решается внутри)
+
+также в infrastructure будет использоваться domain как базовый класс ABC для реализации
+"""
 from dataclasses import dataclass
 
 from app.domain.user.entities.user import User
@@ -35,6 +46,16 @@ class AuthenticateUserHandler:
 
     async def execute(self, command: AuthenticateUserCommand) -> AuthenticateUserResponse:
         # 1. Проверка подписи (выбросит ValueError, если данные поддельные)
+        # Проверяется криптографическая подпись, которую серверы Telegram добавляют
+        # к строке init_data при открытии Mini App
+        #
+        # т.е. серверы telegram берут данные юзера (id и тд) и токен бота и делают по ним хеш
+        # и отпрпавляют на фронтенд, злоумышленник видит ДАННЫЕ+ХЕШ ОТ СЕРВЕРОВв
+        # Злоумышленник может поменять данные,но не видит токен бота и поэтому
+        # хеш посчитать правильно он не может и отрпавляет на бэкенд
+        # бэкенд достаёт из базы данные,берёт токен и еслии на фронте
+        # злоумышленние ничего не менял, то это действительно тот юзер который
+        # за себя выдаёт
         telegram_data = self.auth_verifier.verify(command.init_data)
 
         # 2. Создание Value Object
