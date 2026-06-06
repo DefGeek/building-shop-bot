@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.infrastructure.repositories.user_repository_impl import UserRepositoryImpl
 from app.infrastructure.telegram.auth_verifier import TelegramAuthVerifier
+from app.infrastructure.security.jwt import JwtTokenGenerator
 from app.application.auth.commands.authenticate_user import AuthenticateUserHandler
 
 # Синглтон верификатора
@@ -16,6 +17,7 @@ from app.application.auth.commands.authenticate_user import AuthenticateUserHand
 # экземпляр на всё время работы приложения и все части программы
 # используют именно этот один объект
 _auth_verifier = TelegramAuthVerifier()
+_token_generator = JwtTokenGenerator()
 
 
 def get_auth_handler(db: AsyncSession = Depends(get_db)) -> AuthenticateUserHandler:
@@ -26,5 +28,6 @@ def get_auth_handler(db: AsyncSession = Depends(get_db)) -> AuthenticateUserHand
 
     return AuthenticateUserHandler(
         user_repository=repo,
-        auth_verifier=_auth_verifier
+        auth_verifier=_auth_verifier,
+        oken_generator=_token_generator
     )

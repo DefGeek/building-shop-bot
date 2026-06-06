@@ -8,7 +8,7 @@ application как и infrastructure импортирую только из doma
 из infrastructure, и соответственно в infrastructure функции будут подаваться
 domain объекты и поэтому они там тоже нужны (мапингом этот вопрос решается внутри)
 
-также в infrastructure будет использоваться domain как базовый класс ABC для реализации
+
 """
 from dataclasses import dataclass
 
@@ -16,7 +16,7 @@ from app.domain.user.entities.user import User
 from app.domain.user.ports.user_repository import UserRepository
 from app.domain.user.value_objects.telegram_id import TelegramID
 from app.domain.user.ports.auth_verifier import AuthVerifier  # <-- Только интерфейс!
-
+from app.domain.user.ports.token_generator import TokenGenerator # <-- Добавили
 
 @dataclass
 class AuthenticateUserCommand:
@@ -33,16 +33,19 @@ class AuthenticateUserResponse:
     full_name: str
     role: str
     is_new_user: bool
+    access_token: str
 
 
 class AuthenticateUserHandler:
     def __init__(
             self,
             user_repository: UserRepository,
-            auth_verifier: AuthVerifier  # <-- Внедряем через DI, а не создаем внутри
+            auth_verifier: AuthVerifier,
+            token_generator: TokenGenerator
     ):
         self.user_repository = user_repository
         self.auth_verifier = auth_verifier
+        self.token_generator = token_generator
 
     async def execute(self, command: AuthenticateUserCommand) -> AuthenticateUserResponse:
         # 1. Проверка подписи (выбросит ValueError, если данные поддельные)
@@ -85,5 +88,6 @@ class AuthenticateUserHandler:
             first_name=user.first_name,
             full_name=user.full_name,
             role=user.role.value,
-            is_new_user=is_new_user
+            is_new_user=is_new_user,
+            access_token=self.token_generator.generate(user.id)
         )
