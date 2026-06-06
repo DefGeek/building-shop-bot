@@ -7,12 +7,16 @@ from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from app.config import settings
 
+# === ДОБАВЬТЕ ЭТИ ДВА ИМПОРТА ===
+from app.infrastructure.database.models.user_model import Base
+from app.database import engine
+# =================================
+
 bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 dp = Dispatcher()
 
 
 def get_main_keyboard():
-    # Обратите внимание: URL должен вести на ваш реальный домен или localhost при разработке
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🛒 Открыть магазин", web_app={"url": "https://your-mini-app-url.com"})],
         [InlineKeyboardButton(text="❓ Помощь", callback_data="help")]
@@ -39,7 +43,14 @@ async def run_web_server():
 async def main():
     print("🚀 Запуск СтройМаркет AI (Бот + API)...")
 
-    # Запускаем бота и веб-сервер параллельно в одном event loop (в одном асинхронном потоке)
+    # === ДОБАВЬТЕ ЭТОТ БЛОК ===
+    print("🔄 Проверка/создание таблиц базы данных...")
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    print("✅ Таблицы базы данных проверены/созданы")
+    # ==========================
+
+    # Запускаем бота и веб-сервер параллельно в одном event loop
     await asyncio.gather(
         dp.start_polling(bot),
         run_web_server()
