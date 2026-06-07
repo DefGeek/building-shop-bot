@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from uuid import uuid4, UUID
 from sqlalchemy import String, Boolean, DateTime, BigInteger
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
