@@ -62,7 +62,7 @@ class AuthenticateUserHandler:
         telegram_data = self.auth_verifier.verify(command.init_data)
 
         # 2. Создание Value Object
-        telegram_id = TelegramID(int(telegram_data['id']))
+        telegram_id = TelegramID(int(telegram_data['user']['id']))
 
         # 3. Поиск или создание пользователя
         user = await self.user_repository.find_by_telegram_id(telegram_id)

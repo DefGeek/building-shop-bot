@@ -14,26 +14,24 @@ from app.presentation.dependencies import get_auth_handler
 
 router = APIRouter()
 
+
 @router.post("/auth/telegram")
 async def auth_telegram(
-    x_telegram_init_data: str = Header(alias="X-Telegram-Init-Data"),
-    #Соблюдаем Паттерн проектирования Dependency Injection при котором объект не создаёт
-    #необходимые ему зависимости самостоятельно, а получает их извне
-    handler: AuthenticateUserHandler = Depends(get_auth_handler)
+        x_telegram_init_data: str = Header(alias="X-Telegram-Init-Data"),
+        handler: AuthenticateUserHandler = Depends(get_auth_handler)
 ):
+    # === ДОБАВЬТЕ ЭТИ СТРОКИ ДЛЯ ОТЛАДКИ ===
+    print(f"🔍 DEBUG: Получен init_data: {x_telegram_init_data[:200]}...")
+    # ========================================
+
     try:
-        # 1. Presentation преобразует сырой HTTP-запрос в Команду
         command = AuthenticateUserCommand(init_data=x_telegram_init_data)
-
-        # 2. Presentation передает управление в Application
         response = await handler.execute(command)
-
-        # 3. Presentation возвращает ответ клиенту
         return response
 
     except ValueError as e:
-        # Ловим бизнес-ошибки (например, "Invalid Telegram signature")
         raise HTTPException(status_code=401, detail=str(e))
     except Exception as e:
-        # Ловим непредвиденные ошибки
-        raise HTTPException(status_code=500, detail="Internal server error")
+        print(f"❌ DEBUG: Исключение: {type(e).__name__}: {e}")
+        # ============================
+        raise HTTPException(status_code=500, detail=f"Internal server error: {e}")

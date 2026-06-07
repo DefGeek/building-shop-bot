@@ -29,5 +29,5 @@ def get_auth_handler(db: AsyncSession = Depends(get_db)) -> AuthenticateUserHand
     return AuthenticateUserHandler(
         user_repository=repo,
         auth_verifier=_auth_verifier,
-        oken_generator=_token_generator
+        token_generator=_token_generator
     )

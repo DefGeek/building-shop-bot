@@ -18,7 +18,7 @@ dp = Dispatcher()
 
 def get_main_keyboard():
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🛒 Открыть магазин", web_app={"url": "https://your-mini-app-url.com"})],
+        [InlineKeyboardButton(text="🛒 Открыть магазин", web_app={"url": "https://tubby-unit-reclining.ngrok-free.dev/"})],
         [InlineKeyboardButton(text="❓ Помощь", callback_data="help")]
     ])
     return keyboard
