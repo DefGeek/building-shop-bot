@@ -79,7 +79,9 @@ DATABASE_URL=postgresql+asyncpg://stroymarket_user:stroymarket_password@db:5432/
 
 ### 3. Запуск инфраструктуры и приложения
 ```bash
-docker-compose up --build
+docker-compose up --build 
+npm run dev
+ngrok http 3000 
 ```
 После успешного запуска:
 * **PostgreSQL** будет доступна на `localhost:5432`.

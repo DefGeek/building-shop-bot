@@ -12,7 +12,7 @@ const api = axios.create({
 // для проверки авторизован ли пользователь
 api.interceptors.request.use((config) => {
   //jwt токен
-  const token = localStorage.getItem('access_token'); достаёт токен из localStorage браузера
+  const token = localStorage.getItem('access_token'); // достаёт токен из localStorage браузера
   //если токен есть то добавляем его в заголовок Authorization
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

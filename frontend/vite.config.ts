@@ -5,9 +5,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
+    // Разрешаем все хосты (для разработки с ngrok)
+    allowedHosts: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://localhost:8000',  //
         changeOrigin: true,
       }
     }

@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import Optional
-from uuid import UUID
 
 from app.domain.user.entities.user import User
 from app.domain.user.value_objects.telegram_id import TelegramID
