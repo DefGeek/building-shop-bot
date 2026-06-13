@@ -1,4 +1,3 @@
-# app/main.py
 import asyncio
 import uvicorn
 from aiogram import Bot, Dispatcher
@@ -6,11 +5,8 @@ from aiogram.filters import Command
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from app.config import settings
-
-# === ДОБАВЬТЕ ЭТИ ДВА ИМПОРТА ===
 from app.infrastructure.database.models.user_model import Base
 from app.database import engine
-# =================================
 
 bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 dp = Dispatcher()
@@ -41,16 +37,11 @@ async def run_web_server():
 
 
 async def main():
-    print("🚀 Запуск СтройМаркет AI (Бот + API)...")
-
-    # === ДОБАВЬТЕ ЭТОТ БЛОК ===
-    print("🔄 Проверка/создание таблиц базы данных...")
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    print("✅ Таблицы базы данных проверены/созданы")
-    # ==========================
 
-    # Запускаем бота и веб-сервер параллельно в одном event loop
+    # Запускаем бота и веб-сервер конкурентно (асинхронно) в одном event loop,
+    # чтобы они не блокировали выполнение друг друга.
     await asyncio.gather(
         dp.start_polling(bot),
         run_web_server()

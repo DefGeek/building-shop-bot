@@ -30,9 +30,6 @@ async def root():
 
 @app.on_event("startup")
 async def startup_event():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
     async with async_session_maker() as db:
         result = await db.execute(select(ProductModel))
         if not result.scalars().first():
