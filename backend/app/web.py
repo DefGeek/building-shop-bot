@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
-from app.database import engine, async_session_maker
+from app.database import engine, async_session_maker, Base
 from app.infrastructure.database.models.product_model import ProductModel
-from app.presentation.routers import auth, products
+from app.infrastructure.database.models.order_model import Order, OrderItem
+from app.presentation.routers import auth, products, orders
 
 app = FastAPI(title="СтройМаркет AI API")
 
@@ -19,6 +20,7 @@ app.add_middleware(
 # Роутеры ПОСЛЕ middleware
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(products.router, prefix="/api/v1")
+app.include_router(orders.router, prefix="/api/v1")
 
 
 @app.get("/")
@@ -29,7 +31,7 @@ async def root():
 @app.on_event("startup")
 async def startup_event():
     async with engine.begin() as conn:
-        await conn.run_sync(ProductModel.metadata.create_all)
+        await conn.run_sync(Base.metadata.create_all)
 
     async with async_session_maker() as db:
         result = await db.execute(select(ProductModel))

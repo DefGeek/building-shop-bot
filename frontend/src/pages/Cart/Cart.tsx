@@ -104,9 +104,9 @@ export function Cart() {
               {getTotalPrice().toLocaleString('ru-RU')} ₽
             </span>
           </div>
-          <button className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-lg transition text-lg">
-            Оформить заказ
-          </button>
+          <Link to="/checkout" className="block w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-lg transition text-center text-lg">
+                Оформить заказ
+          </Link>
         </div>
       </div>
     </div>

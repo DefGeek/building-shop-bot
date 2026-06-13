@@ -1,42 +1,61 @@
-import axios from 'axios'; //axios - библиотека для отправки http запросов
+import axios from 'axios';
+
+const baseURL = '/api/v1';
 
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// перехватчик срабатывает при каждом HTTP запросе к backend
-// берёт jwt токен из локального хранилища и отправляет его на backend
-// для проверки авторизован ли пользователь
 api.interceptors.request.use((config) => {
-  //jwt токен
-  const token = localStorage.getItem('access_token'); // достаёт токен из localStorage браузера
-  //если токен есть то добавляем его в заголовок Authorization
+  const token = getCookie('access_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log('🔑 [API] Токен добавлен к запросу');
+  } else {
+    console.warn('⚠️ [API] Токен НЕ найден в cookie!');
   }
   return config;
 });
 
-// Обработка ошибок авторизации
-//interceptor - перехватчик
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    //если пришла ошибка 401 то значит у пользователя
-    //либо нет доступа либо токен невалиден или просрочен
     if (error.response?.status === 401) {
-      //удаляем старый токен
-      localStorage.removeItem('access_token');
-      //обновляем страницу, чтобы авторизация началась заново
-      window.location.reload();
+      console.error('❌ [API] 401 Unauthorized - удаляем cookie и перезагружаем');
+      // ⚠️ ВАЖНО: Удаляем cookie и перезагружаем страницу
+      deleteCookie('access_token');
+      console.log('🗑️ [API] Cookie access_token удалена');
+      
+      // Перезагружаем страницу, чтобы заново пройти авторизацию
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     }
-    //передаём ошибку дальше, чтоб можно было с ней сделать что то ещё
     return Promise.reject(error);
   }
 );
 
-//экспорт настроенного axios чтобы другие файлы могли его использовать
+export function setCookie(name: string, value: string, days = 7) {
+  console.log('🍪 [Cookie] Устанавливаем:', name);
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+  console.log('✅ [Cookie] Установлено. Текущие cookie:', document.cookie);
+}
+
+export function getCookie(name: string): string | null {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  const result = match ? match[2] : null;
+  console.log('🔍 [Cookie] Поиск', name, ':', result ? 'НАЙДЕН' : 'НЕ НАЙДЕН');
+  return result;
+}
+
+export function deleteCookie(name: string) {
+  console.log('🗑️ [Cookie] Удаляем:', name);
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+  console.log('✅ [Cookie] Удалено. Текущие cookie:', document.cookie);
+}
+
 export default api;

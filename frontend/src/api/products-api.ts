@@ -10,6 +10,6 @@ export interface Product {
 }
 
 export async function getProducts(): Promise<Product[]> {
-  const response = await api.get<Product[]>('/products');
+  const response = await api.get<Product[]>('/products/');
   return response.data;
 }

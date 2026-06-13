@@ -7,16 +7,15 @@ application как и infrastructure импортирую только из doma
 в application потом будет передаваться в presentation реализация
 из infrastructure, и соответственно в infrastructure функции будут подаваться
 domain объекты и поэтому они там тоже нужны (мапингом этот вопрос решается внутри)
-
-
 """
 from dataclasses import dataclass
 
 from app.domain.user.entities.user import User
 from app.domain.user.ports.user_repository import UserRepository
 from app.domain.user.value_objects.telegram_id import TelegramID
-from app.domain.user.ports.auth_verifier import AuthVerifier  # <-- Только интерфейс!
-from app.domain.user.ports.token_generator import TokenGenerator # <-- Добавили
+from app.domain.user.ports.auth_verifier import AuthVerifier
+from app.domain.user.ports.token_generator import TokenGenerator
+
 
 @dataclass
 class AuthenticateUserCommand:
@@ -48,17 +47,7 @@ class AuthenticateUserHandler:
         self.token_generator = token_generator
 
     async def execute(self, command: AuthenticateUserCommand) -> AuthenticateUserResponse:
-        # 1. Проверка подписи (выбросит ValueError, если данные поддельные)
-        # Проверяется криптографическая подпись, которую серверы Telegram добавляют
-        # к строке init_data при открытии Mini App
-        #
-        # т.е. серверы telegram берут данные юзера (id и тд) и токен бота и делают по ним хеш
-        # и отпрпавляют на фронтенд, злоумышленник видит ДАННЫЕ+ХЕШ ОТ СЕРВЕРОВв
-        # Злоумышленник может поменять данные,но не видит токен бота и поэтому
-        # хеш посчитать правильно он не может и отрпавляет на бэкенд
-        # бэкенд достаёт из базы данные,берёт токен и еслии на фронте
-        # злоумышленние ничего не менял, то это действительно тот юзер который
-        # за себя выдаёт
+        # 1. Проверка подписи
         telegram_data = self.auth_verifier.verify(command.init_data)
 
         # 2. Создание Value Object
@@ -89,5 +78,5 @@ class AuthenticateUserHandler:
             full_name=user.full_name,
             role=user.role.value,
             is_new_user=is_new_user,
-            access_token=self.token_generator.generate(user.id)
+            access_token=self.token_generator.generate(user.id, user.telegram_id)
         )
