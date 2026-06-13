@@ -2,6 +2,11 @@
 Суть dependencies чтобы брать реализации из architecture
 и передавать их в сценарии из application
 """
+from fastapi import HTTPException, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import jwt
+from app.config import settings
+
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -31,3 +36,27 @@ def get_auth_handler(db: AsyncSession = Depends(get_db)) -> AuthenticateUserHand
         auth_verifier=_auth_verifier,
         token_generator=_token_generator
     )
+
+
+def get_current_telegram_id(credentials: HTTPAuthorizationCredentials = Depends(security)) -> int:
+    """
+    Извлекает telegram_id из JWT токена.
+    Используется в защищенных роутах (например, создание заказа),
+    чтобы знать, от какого пользователя пришел запрос.
+    """
+    try:
+        # Декодируем токен, используя тот же SECRET_KEY, которым он был создан
+        payload = jwt.decode(credentials.credentials, settings.SECRET_KEY, algorithms=["HS256"])
+        telegram_id = payload.get("telegram_id")
+
+        if telegram_id is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Невалидный токен: отсутствует telegram_id"
+            )
+        return int(telegram_id)
+    except jwt.PyJWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Невалидный или просроченный токен"
+        )

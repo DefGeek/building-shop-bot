@@ -31,6 +31,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       # ВАЖНО: URL должен указывать на имя сервиса 'db', а не на localhost
       - DATABASE_URL=postgresql+asyncpg://stroymarket_user:stroymarket_password@db:5432/stroymarket_db
+      - ADMIN_CHAT_ID=${ADMIN_CHAT_ID}
     ports:
       - "8000:8000"
     volumes:
