@@ -20,10 +20,6 @@ async def auth_telegram(
         x_telegram_init_data: str = Header(alias="X-Telegram-Init-Data"),
         handler: AuthenticateUserHandler = Depends(get_auth_handler)
 ):
-    # === ДОБАВЬТЕ ЭТИ СТРОКИ ДЛЯ ОТЛАДКИ ===
-    print(f"🔍 DEBUG: Получен init_data: {x_telegram_init_data[:200]}...")
-    # ========================================
-
     try:
         command = AuthenticateUserCommand(init_data=x_telegram_init_data)
         response = await handler.execute(command)

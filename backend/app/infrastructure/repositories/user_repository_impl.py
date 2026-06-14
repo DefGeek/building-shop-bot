@@ -70,3 +70,6 @@ class UserRepositoryImpl(UserRepository):
         await self.db.refresh(merged_model)
         #Обазаны вернуть доменную сущность согласно DDD
         return self._to_domain(merged_model)
+
+    async def rollback(self) -> None:
+        await self.db.rollback()

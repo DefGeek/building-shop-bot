@@ -1,4 +1,3 @@
-# domain/user/ports/auth_verifier.py
 from abc import ABC, abstractmethod
 from typing import Dict, Any
 

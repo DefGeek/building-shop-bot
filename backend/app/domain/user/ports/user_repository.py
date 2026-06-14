@@ -13,3 +13,7 @@ class UserRepository(ABC):
     @abstractmethod
     async def save(self, user: User) -> User:
         pass
+
+    @abstractmethod
+    async def rollback(self) -> None:
+        pass

@@ -9,6 +9,7 @@ application как и infrastructure импортирую только из doma
 domain объекты и поэтому они там тоже нужны (мапингом этот вопрос решается внутри)
 """
 from dataclasses import dataclass
+from sqlalchemy.exc import IntegrityError  # <-- ДОБАВИЛИ этот импорт для перехвата ошибки БД
 
 from app.domain.user.entities.user import User
 from app.domain.user.ports.user_repository import UserRepository
@@ -66,11 +67,22 @@ class AuthenticateUserHandler:
             )
             is_new_user = True
 
-        # 4. Обновление состояния и сохранение
+            # 4. Попытка сохранения с защитой от гонки данных (Race Condition)
+            # Это защита от эффекта React когда он может два раза отправить запрос на серсерв
+            try:
+                await self.user_repository.save(user)
+            except IntegrityError:
+                # Если здесь произошла ошибка, значит параллельный запрос
+                # уже успел создать этого пользователя.
+                # Мы просто находим его, не нарушая инкапсуляцию репозитория.
+                user = await self.user_repository.find_by_telegram_id(telegram_id)
+                is_new_user = False  # Сбрасываем флаг, так как пользователь уже был в БД
+
+        # 5. Обновление состояния и сохранение (теперь user точно существует и валиден)
         user.update_last_login()
         await self.user_repository.save(user)
 
-        # 5. Возврат строго типизированного ответа
+        # 6. Возврат строго типизированного ответа
         return AuthenticateUserResponse(
             user_id=str(user.id),
             telegram_id=user.telegram_id.value,

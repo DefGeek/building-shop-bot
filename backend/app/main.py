@@ -5,8 +5,11 @@ from aiogram.filters import Command
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from app.config import settings
-from app.infrastructure.database.models.user_model import Base
-from app.database import engine
+from app.database import engine, Base
+
+from app.infrastructure.database.models.user_model import UserModel
+from app.infrastructure.database.models.product_model import ProductModel
+from app.infrastructure.database.models.order_model import Order, OrderItem
 
 bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 dp = Dispatcher()
@@ -37,11 +40,11 @@ async def run_web_server():
 
 
 async def main():
+    # Создаём ВСЕ таблицы (теперь SQLAlchemy знает о всех моделях благодаря импортам выше)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # Запускаем бота и веб-сервер конкурентно (асинхронно) в одном event loop,
-    # чтобы они не блокировали выполнение друг друга.
+    # Запускаем бота и веб-сервер конкурентно (асинхронно) в одном event loop
     await asyncio.gather(
         dp.start_polling(bot),
         run_web_server()
