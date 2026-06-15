@@ -5,39 +5,44 @@ import { Link } from 'react-router-dom';
 
 export function Home() {
   const { tg, user, isInTelegram } = useTelegram();
+
+  if (!isInTelegram) {
+    return (
+      <div style={{ padding: 20, textAlign: 'center' }}>
+        <h2>⚠️ Пожалуйста, откройте это приложение через Telegram</h2>
+      </div>
+    );
+  }
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // useEffect - хук который нужен для взаимодействия с внешним
+  // миром, а не просто для возвращения разметки
   useEffect(() => {
     async function authenticate() {
-      console.log("🚀 [Home] Запуск авторизации...");
-      
-      const initData = tg?.initData || localStorage.getItem('tg_init_data');
+      const initData = tg?.initData;
       
       if (!initData) {
-        console.warn("⚠️ [Home] Нет initData");
         setLoading(false);
         return;
       }
 
       try {
         if (!isAuthenticated()) {
-          console.log("🔄 [Home] Запрашиваем токен...");
+          // отправляем initData для проверки на бэкенд
           await authenticateWithTelegram(initData);
-          console.log("✅ [Home] Авторизация завершена!");
-        } else {
-          console.log("✅ [Home] Уже авторизован");
         }
         setLoading(false);
       } catch (err: any) {
-        console.error("❌ [Home] Ошибка:", err);
+        console.error("Ошибка:", err);
         setError(err.response?.data?.detail || 'Ошибка авторизации');
         setLoading(false);
       }
     }
 
     authenticate();
-  }, [tg]);
+  }, [tg]); // [tg] говорит выполняй этот эффект при первом рендере и при каждом изменении tg
 
   if (loading) {
     return (
@@ -62,11 +67,7 @@ export function Home() {
         
         {isInTelegram && user ? (
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4">✅ Добро пожаловать{user.first_name ? `, ${user.first_name}!` : '!'}</h2>
-            <div className="space-y-2 text-gray-600">
-              <p><strong>Telegram ID:</strong> {user.id}</p>
-              {user.username && <p><strong>Username:</strong> @{user.username}</p>}
-            </div>
+            <h2 className="text-xl font-semibold mb-4">Добро пожаловать{user.first_name ? `, ${user.first_name}!` : '!'}</h2>
           </div>
         ) : (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
