@@ -5,6 +5,7 @@ import uuid
 from app.database import Base
 from app.domain.wallet.entities.transaction import TransactionStatus
 
+
 class TransactionModel(Base):
     __tablename__ = "transactions"
 

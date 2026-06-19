@@ -14,7 +14,7 @@ export interface OrderCreateRequest {
   items: OrderItemRequest[];
 }
 
-export async function createOrder(orderData: OrderCreateRequest) {
+export async function createOrder(orderData: any): Promise<{ order_id: number; status: string }> {
   const response = await api.post('/orders/', orderData);
   return response.data;
 }

@@ -9,8 +9,9 @@ from app.database import engine, Base
 
 from app.infrastructure.database.models.user_model import UserModel
 from app.infrastructure.database.models.product_model import ProductModel
-from app.infrastructure.database.models.order_model import Order, OrderItem
-
+from app.infrastructure.database.models.order_model import OrderModel, OrderItemModel
+from app.infrastructure.database.models.wallet_model import WalletModel
+from app.infrastructure.database.models.transaction_model import TransactionModel
 bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 dp = Dispatcher()
 

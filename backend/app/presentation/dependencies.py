@@ -36,6 +36,10 @@ def get_auth_handler(db: AsyncSession = Depends(get_db)) -> AuthenticateUserHand
 def get_current_telegram_id(credentials: HTTPAuthorizationCredentials = Depends(security)) -> int:
     """
     Извлекает telegram_id из JWT токена.
-    Теперь эта функция ТОЛЬКО делегирует работу инфраструктурному сервису.
     """
-    return _token_verifier.verify(credentials.credentials)
+    print(f"\n🔍 AUTH - token: {credentials.credentials[:30]}...")
+
+    telegram_id = _token_verifier.verify(credentials.credentials)
+    print(f"🔍 AUTH - telegram_id: {telegram_id}")
+
+    return telegram_id

@@ -102,6 +102,9 @@ export function Home() {
           <Link to="/catalog" className="block w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-center text-lg">
             🛒 Каталог материалов
           </Link>
+          <Link to="/wallet" className="block w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-center text-lg">
+            💰 Кошелек
+          </Link>
           <Link to="/cart" className="block w-full bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-800 font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-center text-lg border border-gray-300">
             🛍️ Корзина
           </Link>

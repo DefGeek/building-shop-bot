@@ -6,7 +6,9 @@ const api = axios.create({
   baseURL,
   headers: {
     'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true',  // ← ДОБАВЬ ЭТУ СТРОКУ
   },
+  withCredentials: true,  // ← ДОБАВЬ ЭТУ СТРОКУ
 });
 
 api.interceptors.request.use((config) => {
@@ -24,7 +26,6 @@ api.interceptors.response.use(
       console.error('❌ [API] 401 Unauthorized - удаляем cookie и перезагружаем');
       deleteCookie('access_token');
 
-      // Перезагружаем страницу, чтобы заново пройти авторизацию
       setTimeout(() => {
         window.location.reload();
       }, 500);

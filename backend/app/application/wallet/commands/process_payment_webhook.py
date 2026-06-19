@@ -7,7 +7,7 @@ from app.domain.wallet.entities.transaction import TransactionStatus
 @dataclass
 class ProcessWebhookCommand:
     external_payment_id: str
-    status: str  # 'succeeded' или 'canceled'
+    status: str
     amount: float
 
 

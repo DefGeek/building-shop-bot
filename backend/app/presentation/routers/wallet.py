@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.dependencies import get_current_telegram_id
+from app.presentation.dependencies import get_current_telegram_id
 from app.infrastructure.repositories.wallet_repository_impl import WalletRepositoryImpl
 from app.infrastructure.repositories.transaction_repository_impl import TransactionRepositoryImpl
 from app.infrastructure.payment.mock_payment_gateway import MockPaymentGateway

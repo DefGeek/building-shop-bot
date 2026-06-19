@@ -3,9 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from app.database import engine, async_session_maker, Base
 from app.infrastructure.database.models.product_model import ProductModel
-from app.infrastructure.database.models.order_model import Order, OrderItem
+from app.infrastructure.database.models.order_model import OrderModel, OrderItemModel
 from app.infrastructure.database.models.user_model import UserModel
-from app.presentation.routers import auth, products, orders
+from app.infrastructure.database.models.wallet_model import WalletModel
+from app.infrastructure.database.models.transaction_model import TransactionModel
+from app.presentation.routers import auth, products, orders, wallet
 
 app = FastAPI(title="СтройМаркет AI API")
 
@@ -29,6 +31,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(products.router, prefix="/api/v1")
 app.include_router(orders.router, prefix="/api/v1")
+app.include_router(wallet.router, prefix="/api/v1")
 
 
 @app.get("/")

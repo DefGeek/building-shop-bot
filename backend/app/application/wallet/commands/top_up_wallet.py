@@ -8,15 +8,18 @@ from app.domain.wallet.ports.payment_gateway import PaymentGateway, PaymentReque
 from app.domain.wallet.entities.transaction import Transaction, TransactionStatus
 from app.domain.user.value_objects.telegram_id import TelegramID
 
+
 @dataclass
 class TopUpWalletCommand:
     telegram_id: int
     amount: float
 
+
 @dataclass
 class TopUpWalletResponse:
     payment_id: str
     confirmation_url: str
+
 
 class TopUpWalletHandler:
     def __init__(
@@ -42,7 +45,7 @@ class TopUpWalletHandler:
             telegram_id=telegram_id,
             amount=command.amount,
             status=TransactionStatus.PENDING,
-            external_payment_id=None, # Пока нет, будет после запроса к шлюзу
+            external_payment_id=None,
             created_at=datetime.utcnow()
         )
         transaction = await self.transaction_repo.create(transaction)

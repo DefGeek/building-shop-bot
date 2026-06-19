@@ -7,6 +7,7 @@ from app.domain.wallet.entities.transaction import Transaction
 from app.domain.user.value_objects.telegram_id import TelegramID
 from app.infrastructure.database.models.transaction_model import TransactionModel
 
+
 class TransactionRepositoryImpl(TransactionRepository):
     def __init__(self, db: AsyncSession):
         self.db = db
