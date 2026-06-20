@@ -12,7 +12,7 @@ class JwtTokenGenerator(TokenGenerator):
         expire = datetime.utcnow() + timedelta(days=30)
         payload = {
             "sub": str(user_id),
-            "telegram_id": telegram_id.value,  # <-- ДОБАВЛЕНО в payload
+            "telegram_id": telegram_id.value,
             "exp": expire
         }
         return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")

@@ -7,7 +7,6 @@ from fastapi import HTTPException, status
 class JwtTokenVerifier(TokenVerifier):
     def verify(self, token: str) -> int:
         try:
-            # Вся логика декодирования теперь здесь!
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             telegram_id = payload.get("telegram_id")
 

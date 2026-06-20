@@ -29,5 +29,4 @@ async def auth_telegram(
         raise HTTPException(status_code=401, detail=str(e))
     except Exception as e:
         print(f"❌ DEBUG: Исключение: {type(e).__name__}: {e}")
-        # ============================
         raise HTTPException(status_code=500, detail=f"Internal server error: {e}")

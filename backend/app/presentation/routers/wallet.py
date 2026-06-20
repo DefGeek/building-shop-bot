@@ -51,7 +51,6 @@ async def payment_webhook(
 ):
     """Эмуляция вебхука от ЮKassa"""
     # В реальной ЮKassa тут была бы проверка подписи (signature)
-
     # Ожидаем формат: {"event": "payment.succeeded", "object": {"id": "mock_pay_...", "amount": {"value": "100.00"}}}
     event = payload.get("event")
     obj = payload.get("object", {})
